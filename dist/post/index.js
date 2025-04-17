@@ -29960,6 +29960,7 @@ async function run() {
     const token = core.getInput('github_token', { required: true });
     const name = core.getInput('name', { required: true });
     const auto_unlock = core.getBooleanInput('auto_unlock');
+    const fail_if_cant_unlock = core.getBooleanInput('fail_if_cant_unlock');
     core.info(`FIND ME before`);
     const locked = core.getBooleanInput('locked');
     core.info(`FIND ME locked = "${locked}"`);
@@ -29974,7 +29975,13 @@ async function run() {
         }
         catch (err) {
             if (err.status === 422) {
-                core.info(`Lock "${name}" was already released or not found.`);
+                const message = `Lock "${name}" was already released or not found.`;
+                if (fail_if_cant_unlock) {
+                    core.setFailed(message);
+                }
+                else {
+                    core.info(message);
+                }
             }
             else {
                 throw err;

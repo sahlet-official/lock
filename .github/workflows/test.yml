@@ -17,12 +17,6 @@ jobs:
           name: test
           auto_unlock: false
 
-      # - name: Lock second time
-      #   uses: sahlet-official/lock@latest
-      #   with:
-      #     name: test
-      #     auto_unlock: false
-
       - name: Unlock
         uses: sahlet-official/lock@latest
         with:

@@ -16,6 +16,9 @@ inputs:
   fail_if_cant_lock:
     description: "Fail if can't lock"
     default: true
+  fail_if_cant_unlock:
+    description: "Fail if can't unlock"
+    default: true
 outputs:
   locked:
     description: "If lock was acquired"

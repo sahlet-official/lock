@@ -11,25 +11,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Lock with no 
+      - name: Lock with no auto_unlock
         uses: sahlet-official/lock@v0.0.61
         with:
           name: test
           auto_unlock: false
 
-      - name: Lock second time
-        uses: sahlet-official/lock@v0.0.61
-        with:
-          name: test
-          auto_unlock: false
+      # - name: Lock second time
+      #   uses: sahlet-official/lock@v0.0.61
+      #   with:
+      #     name: test
+      #     auto_unlock: false
 
-      - name: unlock
+      - name: Unlock
         uses: sahlet-official/lock@v0.0.61
         with:
           name: test
           mode: unlock
 
-      - name: with 
+      - name: Lock with auto_unlock
         uses: sahlet-official/lock@v0.0.61
         with:
           name: test

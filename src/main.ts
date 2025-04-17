@@ -78,6 +78,7 @@ async function run() {
   const mode = core.getInput('mode') || 'lock';
   const auto_unlock = core.getBooleanInput('auto_unlock');
   const fail_if_cant_lock = core.getBooleanInput('fail_if_cant_lock');
+  const fail_if_cant_unlock = core.getBooleanInput('fail_if_cant_unlock');
 
   const octokit = github.getOctokit(token);
   const { repo, owner } = github.context.repo;
@@ -169,7 +170,13 @@ async function run() {
       core.info(`🔓 Lock "${name}" released`);
     } catch (err: any) {
       if (err.status === 422) {
-        core.info(`Lock "${name}" not found.`);
+        const message = `Lock "${name}" was already released or not found.`;
+        if (fail_if_cant_unlock) {
+          core.setFailed(message);
+        }
+        else {
+          core.info(message);
+        }
       } else {
         throw err;
       }

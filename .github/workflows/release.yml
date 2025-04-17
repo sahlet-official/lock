@@ -36,13 +36,22 @@ jobs:
           git add dist
           git commit -m "chore: build for release v${{ github.event.inputs.version }}" || echo "No changes to commit"
 
-      - name: Create Git tag
+      - name: Sync and Push Commit
         run: |
+          git fetch origin
+          git rebase origin/main
+          git push origin HEAD
+
+      - name: Create Git tags
+        run: |
+          git tag -f v0 -m "Release v${{ github.event.inputs.version }}"
+          git push --force-with-lease origin v0
+
+          git tag -f latest -m "Release v${{ github.event.inputs.version }}"
+          git push --force-with-lease origin latest
+
           git tag -a v${{ github.event.inputs.version }} -m "Release v${{ github.event.inputs.version }}"
           git push origin v${{ github.event.inputs.version }}
-
-      - name: Push changes (dist files)
-        run: git push
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2

@@ -12,24 +12,24 @@ jobs:
 
     steps:
       - name: Lock with no auto_unlock
-        uses: sahlet-official/lock@v0.0.62
+        uses: sahlet-official/lock@latest
         with:
           name: test
           auto_unlock: false
 
       # - name: Lock second time
-      #   uses: sahlet-official/lock@v0.0.62
+      #   uses: sahlet-official/lock@latest
       #   with:
       #     name: test
       #     auto_unlock: false
 
       - name: Unlock
-        uses: sahlet-official/lock@v0.0.62
+        uses: sahlet-official/lock@latest
         with:
           name: test
           mode: unlock
 
       - name: Lock with auto_unlock
-        uses: sahlet-official/lock@v0.0.62
+        uses: sahlet-official/lock@latest
         with:
           name: test

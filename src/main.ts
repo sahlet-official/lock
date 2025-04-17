@@ -76,7 +76,8 @@ async function run() {
   const token = core.getInput('github_token', { required: true });
   const name = core.getInput('name', { required: true });
   const mode = core.getInput('mode') || 'lock';
-  const autounlock = core.getBooleanInput('autounlock');
+  const auto_unlock = core.getBooleanInput('auto_unlock');
+  const fail_if_cant_lock = core.getBooleanInput('fail_if_cant_lock');
 
   const octokit = github.getOctokit(token);
   const { repo, owner } = github.context.repo;
@@ -89,6 +90,9 @@ async function run() {
       await octokit.rest.repos.getBranch({ owner, repo, branch: lockBranch });
       core.setOutput('locked', false);
       await printLockInfo(lockBranch, octokit, owner, repo, name);
+      if (fail_if_cant_lock) {
+        core.setFailed("cant lock");
+      }
     } catch (error: any) {
       if (error.status === 404) {
         const base = github.context.ref.replace('refs/heads/', '');
@@ -143,6 +147,9 @@ async function run() {
           if (error.status === 422 && error.message.includes('Reference already exists')) {
             core.setOutput('locked', false);
             await printLockInfo(lockBranch, octokit, owner, repo, name);
+            if (fail_if_cant_lock) {
+              core.setFailed("cant lock");
+            }
           } else {
             throw error;
           }
@@ -171,4 +178,4 @@ async function run() {
   }
 }
 
-run().catch((err) => core.setFailed(err.stack || err.message));
+run().catch((err) => core.setFailed(err.stack ? `${err.message}\n${err.stack}` : err.message););

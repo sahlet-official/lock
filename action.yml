@@ -10,8 +10,11 @@ inputs:
   github_token:
     description: "GitHub Token"
     default: ${{ github.token }}
-  autounlock:
+  auto_unlock:
     description: "Unlock after workflow done"
+    default: true
+  fail_if_cant_lock:
+    description: "Fail if can't lock"
     default: true
 outputs:
   locked:

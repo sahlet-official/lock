@@ -1,0 +1,89 @@
+name: "Lock"
+description: "Implements a named lock with auto release, wrapps github/lock"
+inputs:
+  name:
+    description: "Name of the lock"
+    required: true
+  mode:
+    description: "lock / unlock"
+    default: 'lock'
+  github_token:
+    description: "GitHub Token"
+    default: "${{ github.token }}"
+  autounlock:
+    description: "Unlock after workflow done"
+    default: true
+outputs:
+  locked:
+    description: "If lock was acquired"
+    value: ${{ steps.iam-lock-owner.outputs.yes }} == true
+  released:
+    description: "If lock was released"
+    value: ${{ steps.lock-released.outputs.yes }} == true
+runs:
+  using: "composite"
+  steps:
+    - name: Try acquire Lock
+      if: inputs.mode == 'lock'
+      uses: github/lock@v2
+      with:
+        mode: 'lock'
+        github_token: ${{ inputs.github_token }}
+        environment: ${{ inputs.name }}
+
+    - name: Release Lock
+      if: inputs.mode == 'unlock'
+      uses: github/lock@v2
+      with:
+        mode: 'unlock'
+        github_token: ${{ inputs.github_token }}
+        environment: ${{ inputs.name }}
+
+    - name: Get lock owner
+      id: get-lock-owner
+      uses: github/lock@v2
+      with:
+        mode: 'check'
+        github_token: ${{ inputs.github_token }}
+        environment: ${{ inputs.name }}
+
+    - name: Make sure I am the owner
+      id: iam-lock-owner
+      if: inputs.mode == 'lock'
+      shell: bash
+      run: |
+        if [[ "${{ steps.get-lock-owner.outputs.locked }}" != "true" ]]; then
+          echo "yes=false" >> "$GITHUB_OUTPUT"
+          echo "❌🔒 Lock is not acquired"
+          exit 1
+        fi
+        if [[ "${{ steps.get-lock-owner.outputs.link }}" != *"${{ github.run_id }}"* ]]; then
+          echo "yes=false" >> "$GITHUB_OUTPUT"
+          echo "❌🔒 Lock is held by another run: ${{ steps.get-lock-owner.outputs.link }}"
+          exit 1
+        fi
+        echo "yes=true" >> "$GITHUB_OUTPUT"
+        echo "🔒 Lock is acquired"
+
+    - name: Make sure the lock is released
+      id: lock-released
+      if: inputs.mode == 'unlock'
+      shell: bash
+      run: |
+        if [[ "${{ steps.get-lock-owner.outputs.locked }}" != "false" ]]; then
+          echo "yes=false" >> "$GITHUB_OUTPUT"
+          echo "❌🔒 Lock is not relesed"
+          exit 1
+        fi
+        echo "yes=true" >> "$GITHUB_OUTPUT"
+        echo "🔒 Lock is acquired"
+
+
+  post:
+    - name: Release Lock
+      if: always() && inputs.autounlock == 'true' && inputs.mode == 'lock' && steps.iam-lock-owner.outputs.yes == 'true'
+      uses: github/lock@v2
+      with:
+        mode: 'unlock'
+        github_token: ${{ inputs.github_token }}
+        environment: ${{ inputs.name }}

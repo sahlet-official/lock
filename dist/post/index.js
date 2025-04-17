@@ -29959,12 +29959,14 @@ const LOCK_PREFIX = 'tmp_lock_branch_';
 async function run() {
     const token = core.getInput('github_token', { required: true });
     const name = core.getInput('name', { required: true });
-    const autounlock = core.getBooleanInput('autounlock');
+    const auto_unlock = core.getBooleanInput('auto_unlock');
+    core.info(`FIND ME before`);
     const locked = core.getBooleanInput('locked');
+    core.info(`FIND ME locked = "${locked}"`);
     const octokit = github.getOctokit(token);
     const { repo, owner } = github.context.repo;
     const lockBranch = `${LOCK_PREFIX}${name}`;
-    if (autounlock && locked) {
+    if (auto_unlock && locked) {
         core.info(`🔁 Releasing lock "${name}"...`);
         try {
             await octokit.rest.git.deleteRef({ owner, repo, ref: `heads/${lockBranch}` });
@@ -29983,7 +29985,7 @@ async function run() {
         core.info(`No unlock performed.`);
     }
 }
-run().catch((err) => core.setFailed(err.stack || err.message));
+run().catch((err) => core.setFailed(err.stack ? `${err.message}\n${err.stack}` : err.message));
 
 
 /***/ }),

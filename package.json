@@ -1,0 +1,16 @@
+{
+  "name": "lock",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "prepare": "npm run build"
+  },
+  "dependencies": {
+    "@actions/core": "^1.11.1",
+    "@actions/github": "^6.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.2"
+  }
+}

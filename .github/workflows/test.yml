@@ -18,18 +18,18 @@ jobs:
           autounlock: false
 
       - name: Lock second time
-        uses: sahlet-official/lock@v0
+        uses: sahlet-official/lock@v0.0.6
         with:
           name: test
           autounlock: false
 
       - name: unlock
-        uses: sahlet-official/lock@v0
+        uses: sahlet-official/lock@v0.0.6
         with:
           name: test
           mode: unlock
 
       - name: with autounlock
-        uses: sahlet-official/lock@v0
+        uses: sahlet-official/lock@v0.0.6
         with:
           name: test

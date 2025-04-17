@@ -9,7 +9,7 @@ async function run() {
   const auto_unlock = core.getBooleanInput('auto_unlock');
 
   core.info(`FIND ME before`);
-  
+
   const locked = core.getBooleanInput('locked');
 
   core.info(`FIND ME locked = "${locked}"`);
@@ -35,4 +35,4 @@ async function run() {
   }
 }
 
-run().catch((err) => core.setFailed(err.stack ? `${err.message}\n${err.stack}` : err.message););
+run().catch((err) => core.setFailed(err.stack ? `${err.message}\n${err.stack}` : err.message));

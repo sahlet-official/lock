@@ -178,4 +178,4 @@ async function run() {
   }
 }
 
-run().catch((err) => core.setFailed(err.stack ? `${err.message}\n${err.stack}` : err.message););
+run().catch((err) => core.setFailed(err.stack ? `${err.message}\n${err.stack}` : err.message));

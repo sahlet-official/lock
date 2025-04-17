@@ -39,7 +39,7 @@ jobs:
       - name: Sync and Push Commit
         run: |
           git fetch origin
-          git rebase origin/main
+          git pull --rebase
           git push origin HEAD
 
       - name: Create Git tags

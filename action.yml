@@ -28,5 +28,4 @@ runs:
   using: "node20"
   main: "dist/index.js"
   post: "dist/post/index.js"
-  post-if: success() && inputs.auto_unlock
-  # == 'true' steps.main.outputs.locked === 'true'
+  post-if: success() && steps.main.outputs.locked == 'true'

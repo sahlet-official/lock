@@ -11,7 +11,7 @@ async function run() {
 
   core.info(`FIND ME before`);
 
-  const locked = core.getBooleanInput('locked');
+  const locked = core.getState('locked') === 'true';
 
   core.info(`FIND ME locked = "${locked}"`);
 

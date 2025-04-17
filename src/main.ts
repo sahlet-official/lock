@@ -86,10 +86,12 @@ async function run() {
 
   if (mode === 'lock') {
     core.setOutput('released', false);
+    core.saveState('released', false);
     try {
       // Try to get the lock branch
       await octokit.rest.repos.getBranch({ owner, repo, branch: lockBranch });
       core.setOutput('locked', false);
+      core.saveState('locked', false);
       await printLockInfo(lockBranch, octokit, owner, repo, name);
       if (fail_if_cant_lock) {
         core.setFailed("cant lock");
@@ -147,6 +149,7 @@ async function run() {
         } catch (error: any) {
           if (error.status === 422 && error.message.includes('Reference already exists')) {
             core.setOutput('locked', false);
+            core.saveState('locked', false);
             await printLockInfo(lockBranch, octokit, owner, repo, name);
             if (fail_if_cant_lock) {
               core.setFailed("cant lock");
@@ -157,6 +160,7 @@ async function run() {
         }
 
         core.setOutput('locked', true);
+        core.saveState('locked', true);
         core.info(`✅🔒 Lock "${name}" acquired`);
       } else {
         throw error;
@@ -164,12 +168,17 @@ async function run() {
     }
   } else if (mode === 'unlock') {
     core.setOutput('locked', false);
+    core.saveState('locked', false);
     try {
       await octokit.rest.git.deleteRef({ owner, repo, ref: `heads/${lockBranch}` });
       core.setOutput('released', true);
+      core.saveState('released', true);
       core.info(`🔓 Lock "${name}" released`);
     } catch (err: any) {
       if (err.status === 422) {
+        core.setOutput('released', false);
+        core.saveState('released', false);
+
         const message = `Lock "${name}" was already released or not found.`;
         if (fail_if_cant_unlock) {
           core.setFailed(message);

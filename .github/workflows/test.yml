@@ -12,7 +12,7 @@ jobs:
 
     steps:
       - name: Lock with no autounlock
-        uses: sahlet-official/lock@v0
+        uses: sahlet-official/lock@v0.0.6
         with:
           name: test
           autounlock: false

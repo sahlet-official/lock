@@ -45,13 +45,14 @@ jobs:
       - name: Create Git tags
         run: |
           git fetch origin --tags
-
           git tag -f v0 -m "Release v${{ github.event.inputs.version }}"
           git push --force-with-lease origin v0
 
+          git fetch origin --tags
           git tag -f latest -m "Release v${{ github.event.inputs.version }}"
           git push --force-with-lease origin latest
 
+          git fetch origin --tags
           git tag -a v${{ github.event.inputs.version }} -m "Release v${{ github.event.inputs.version }}"
           git push origin v${{ github.event.inputs.version }}
 

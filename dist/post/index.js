@@ -29962,7 +29962,7 @@ async function run() {
     const auto_unlock = core.getBooleanInput('auto_unlock');
     const fail_if_cant_unlock = core.getBooleanInput('fail_if_cant_unlock');
     core.info(`FIND ME before`);
-    const locked = core.getBooleanInput('locked');
+    const locked = core.getState('locked') === 'true';
     core.info(`FIND ME locked = "${locked}"`);
     const octokit = github.getOctokit(token);
     const { repo, owner } = github.context.repo;

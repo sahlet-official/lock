@@ -28,4 +28,4 @@ runs:
   using: "node20"
   main: "dist/index.js"
   post: "dist/post/index.js"
-  post-if: success() && inputs.auto_unlock == true
+  post-if: success() && inputs.auto_unlock == 'true'

@@ -15,13 +15,13 @@ jobs:
         uses: sahlet-official/lock@v0.0.61
         with:
           name: test
-          : false
+          auto_unlock: false
 
       - name: Lock second time
         uses: sahlet-official/lock@v0.0.61
         with:
           name: test
-          : false
+          auto_unlock: false
 
       - name: unlock
         uses: sahlet-official/lock@v0.0.61

@@ -18,7 +18,7 @@ outputs:
     value: ${{ steps.outputs.outputs.locked }}
   released:
     description: "If lock was released"
-    value: ${{ steps.outputs.outputs.released }} == true
+    value: ${{ steps.outputs.outputs.released }}
 runs:
   using: "composite"
   steps:

@@ -6,7 +6,7 @@ inputs:
     required: true
   mode:
     description: "lock/unlock"
-    required: "lock"
+    default: "lock"
   github_token:
     description: "GitHub Token"
     default: ${{ github.token }}

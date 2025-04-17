@@ -1,0 +1,35 @@
+name: Release
+
+permissions:
+  contents: write
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Lock with no autounlock
+        uses: sahlet-official/lock@v0
+        with:
+          name: test
+          autounlock: false
+
+      - name: Lock second time
+        uses: sahlet-official/lock@v0
+        with:
+          name: test
+          autounlock: false
+
+      - name: unlock
+        uses: sahlet-official/lock@v0
+        with:
+          name: test
+          mode: unlock
+
+      - name: with autounlock
+        uses: sahlet-official/lock@v0
+        with:
+          name: test

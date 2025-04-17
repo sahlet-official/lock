@@ -1,27 +1,34 @@
-import * as core from "@actions/core";
-import { exec } from "@actions/exec";
+import * as core from '@actions/core';
+import * as github from '@actions/github';
+
+const LOCK_PREFIX = 'tmp_lock_branch_';
 
 async function run() {
-  try {
-    const name = core.getState("lock_name");
-    const autounlock = core.getState("autounlock") === "true";
-    if (!autounlock) {
-      core.info("🟡 autounlock is disabled, skipping unlock");
-      return;
-    }
+  const token = core.getInput('github_token', { required: true });
+  const name = core.getInput('name', { required: true });
+  const autounlock = core.getBooleanInput('autounlock');
 
-    core.info("Releasing lock...");
-    await exec("gh", ["workflow", "unlock", "--environment", name, "--repo", process.env.GITHUB_REPOSITORY!], {
-      env: {
-        ...process.env,
-        GH_TOKEN: process.env.GITHUB_TOKEN || ""
+  const locked = core.getBooleanInput('locked');
+
+  const octokit = github.getOctokit(token);
+  const { repo, owner } = github.context.repo;
+  const lockBranch = `${LOCK_PREFIX}${name}`;
+
+  if (autounlock && locked) {
+    core.info(`🔁 Releasing lock "${name}"...`);
+    try {
+      await octokit.rest.git.deleteRef({ owner, repo, ref: `heads/${lockBranch}` });
+      core.info(`🔓 Lock "${name}" released`);
+    } catch (err: any) {
+      if (err.status === 422) {
+        core.info(`Lock "${name}" was already released or not found.`);
+      } else {
+        throw err;
       }
-    });
-
-    core.info("🔓 Lock released");
-  } catch (error) {
-    core.warning(`⚠️ Failed to release lock: ${error}`);
+    }
+  } else {
+    core.info(`No unlock performed.`);
   }
 }
 
-run();
+run().catch((err) => core.setFailed(err.stack || err.message));

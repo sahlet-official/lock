@@ -29961,9 +29961,7 @@ async function run() {
     const name = core.getInput('name', { required: true });
     const auto_unlock = core.getBooleanInput('auto_unlock');
     const fail_if_cant_unlock = core.getBooleanInput('fail_if_cant_unlock');
-    core.info(`FIND ME before`);
     const locked = core.getState('locked') === 'true';
-    core.info(`FIND ME locked = "${locked}"`);
     const octokit = github.getOctokit(token);
     const { repo, owner } = github.context.repo;
     const lockBranch = `${LOCK_PREFIX}${name}`;
